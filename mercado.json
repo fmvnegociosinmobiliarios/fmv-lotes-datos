@@ -1,61 +1,1559 @@
 {
  "_doc": "Parámetros de mercado por barrio (USD). precio_venta / precio_local_pb / costo_directo = [Estándar, Alto, Premium] por m². inc_vendible = [min, med, max] USD por m² vendible que paga un desarrollador; lote_m2 = [min, med, max] USD por m² de lote; usado_m2 = [min, max] USD por m² cubierto de construcción usada (tasación por uso actual). Actualizar mensualmente la fecha, UVA, MEP y precios. Fuente de referencia: MESH costo directo (jul-2026 USD 1.629/m² para obra terminada estándar-alto), relevamientos Zonaprop/Argenprop.",
- "fecha_mercado": "2026-10-03",
+ "fecha_mercado": "2026-10-04",
  "global": {
-  "UVA": 2114.62, "MEP": 1532.39,
-  "indirectos": {"proyecto_direccion": 0.08, "derechos_tasas": 0.025, "imprevistos": 0.05, "comercializacion": 0.04, "publicidad": 0.015, "legales_escrituras": 0.02},
-  "demolicion_usd_m2": 70, "retardo_pluvial_usd": 18000, "margen_objetivo": 0.22, "margen_minimo": 0.15,
-  "plazo_aprob_base": 7, "plazo_obra_base": 18, "plazo_obra_por_m2": 0.0025, "plazo_comercializacion": 6
+  "UVA": 2142.08,
+  "MEP": 1547.75,
+  "indirectos": {
+   "proyecto_direccion": 0.08,
+   "derechos_tasas": 0.025,
+   "imprevistos": 0.05,
+   "comercializacion": 0.04,
+   "publicidad": 0.015,
+   "legales_escrituras": 0.02
+  },
+  "demolicion_usd_m2": 70,
+  "retardo_pluvial_usd": 18000,
+  "margen_objetivo": 0.22,
+  "margen_minimo": 0.15,
+  "plazo_aprob_base": 7,
+  "plazo_obra_base": 18,
+  "plazo_obra_por_m2": 0.0025,
+  "plazo_comercializacion": 6
  },
- "default": {"precio_venta": [2500, 2800, 3200], "precio_local_pb": [2700, 3000, 3400], "costo_directo": [1250, 1500, 1850], "inc_vendible": [350, 450, 600], "lote_m2": [700, 1000, 1500], "usado_m2": [1100, 1500], "nucleo_m2": 26},
+ "default": {
+  "precio_venta": [
+   2500,
+   2800,
+   3200
+  ],
+  "precio_local_pb": [
+   2700,
+   3000,
+   3400
+  ],
+  "costo_directo": [
+   1250,
+   1500,
+   1850
+  ],
+  "inc_vendible": [
+   350,
+   450,
+   600
+  ],
+  "lote_m2": [
+   700,
+   1000,
+   1500
+  ],
+  "usado_m2": [
+   1100,
+   1500
+  ],
+  "nucleo_m2": 26
+ },
  "barrios": {
-  "Belgrano":        {"precio_venta": [3250, 3550, 3950], "precio_local_pb": [3800, 4200, 4600], "costo_directo": [1300, 1550, 1900], "inc_vendible": [500, 600, 780], "lote_m2": [2400, 3300, 5000], "usado_m2": [2000, 2600]},
-  "Nuñez":           {"precio_venta": [3300, 3600, 4000], "precio_local_pb": [3700, 4100, 4500], "costo_directo": [1300, 1550, 1900], "inc_vendible": [500, 600, 780], "lote_m2": [2300, 3200, 4800], "usado_m2": [2000, 2600]},
-  "Palermo":         {"precio_venta": [3500, 3900, 4400], "precio_local_pb": [4000, 4500, 5000], "costo_directo": [1350, 1600, 1950], "inc_vendible": [550, 680, 900], "lote_m2": [2600, 3600, 5500], "usado_m2": [2100, 2800]},
-  "Recoleta":        {"precio_venta": [3400, 3800, 4300], "precio_local_pb": [3900, 4400, 4900], "costo_directo": [1350, 1600, 1950], "inc_vendible": [550, 650, 850], "lote_m2": [2600, 3500, 5200], "usado_m2": [2100, 2700]},
-  "Colegiales":      {"precio_venta": [3100, 3400, 3800], "precio_local_pb": [3500, 3900, 4300], "costo_directo": [1300, 1550, 1900], "inc_vendible": [470, 560, 720], "lote_m2": [2100, 2900, 4200], "usado_m2": [1900, 2400]},
-  "Villa Urquiza":   {"precio_venta": [2900, 3200, 3600], "precio_local_pb": [3300, 3700, 4100], "costo_directo": [1280, 1520, 1850], "inc_vendible": [420, 520, 680], "lote_m2": [1700, 2400, 3600], "usado_m2": [1700, 2200]},
-  "Coghlan":         {"precio_venta": [2900, 3200, 3600], "precio_local_pb": [3200, 3600, 4000], "costo_directo": [1280, 1520, 1850], "inc_vendible": [420, 520, 680], "lote_m2": [1700, 2400, 3600], "usado_m2": [1700, 2200]},
-  "Saavedra":        {"precio_venta": [2900, 3200, 3600], "precio_local_pb": [3200, 3600, 4000], "costo_directo": [1280, 1520, 1850], "inc_vendible": [420, 520, 680], "lote_m2": [1600, 2300, 3400], "usado_m2": [1700, 2200]},
-  "Villa Pueyrredon":{"precio_venta": [2700, 3000, 3400], "precio_local_pb": [3000, 3400, 3800], "costo_directo": [1260, 1500, 1830], "inc_vendible": [380, 470, 620], "lote_m2": [1400, 2000, 3000], "usado_m2": [1500, 2000]},
-  "Caballito":       {"precio_venta": [2800, 3100, 3500], "precio_local_pb": [3300, 3700, 4100], "costo_directo": [1280, 1520, 1850], "inc_vendible": [420, 520, 680], "lote_m2": [1700, 2400, 3600], "usado_m2": [1600, 2100]},
-  "Villa Crespo":    {"precio_venta": [2800, 3100, 3500], "precio_local_pb": [3300, 3700, 4100], "costo_directo": [1280, 1520, 1850], "inc_vendible": [420, 520, 680], "lote_m2": [1700, 2400, 3600], "usado_m2": [1600, 2100]},
-  "Chacarita":       {"precio_venta": [2800, 3100, 3500], "precio_local_pb": [3200, 3600, 4000], "costo_directo": [1280, 1520, 1850], "inc_vendible": [400, 500, 660], "lote_m2": [1600, 2300, 3400], "usado_m2": [1500, 2000]},
-  "Villa Ortuzar":   {"precio_venta": [2700, 3000, 3400], "precio_local_pb": [3000, 3400, 3800], "costo_directo": [1260, 1500, 1830], "inc_vendible": [380, 470, 620], "lote_m2": [1400, 2000, 3000], "usado_m2": [1500, 2000]},
-  "Almagro":         {"precio_venta": [2600, 2900, 3300], "precio_local_pb": [3000, 3400, 3800], "costo_directo": [1260, 1500, 1830], "inc_vendible": [380, 470, 620], "lote_m2": [1400, 2000, 3000], "usado_m2": [1500, 2000]},
-  "Villa Devoto":    {"precio_venta": [2700, 3000, 3400], "precio_local_pb": [3000, 3400, 3800], "costo_directo": [1260, 1500, 1830], "inc_vendible": [380, 470, 620], "lote_m2": [1400, 2000, 3000], "usado_m2": [1500, 2000]},
-  "Villa Del Parque":{"precio_venta": [2600, 2900, 3300], "precio_local_pb": [2900, 3300, 3700], "costo_directo": [1260, 1500, 1830], "inc_vendible": [370, 450, 600], "lote_m2": [1300, 1900, 2800], "usado_m2": [1400, 1900]},
-  "Agronomia":       {"precio_venta": [2600, 2900, 3300], "precio_local_pb": [2900, 3300, 3700], "costo_directo": [1260, 1500, 1830], "inc_vendible": [370, 450, 600], "lote_m2": [1300, 1900, 2800], "usado_m2": [1400, 1900]},
-  "Parque Chas":     {"precio_venta": [2600, 2900, 3300], "precio_local_pb": [2900, 3300, 3700], "costo_directo": [1260, 1500, 1830], "inc_vendible": [370, 450, 600], "lote_m2": [1300, 1900, 2800], "usado_m2": [1400, 1900]},
-  "Paternal":        {"precio_venta": [2500, 2800, 3200], "precio_local_pb": [2800, 3200, 3600], "costo_directo": [1250, 1500, 1830], "inc_vendible": [350, 430, 580], "lote_m2": [1200, 1700, 2600], "usado_m2": [1300, 1800]},
-  "Villa Gral. Mitre":{"precio_venta": [2500, 2800, 3200], "precio_local_pb": [2800, 3200, 3600], "costo_directo": [1250, 1500, 1830], "inc_vendible": [350, 430, 580], "lote_m2": [1200, 1700, 2600], "usado_m2": [1300, 1800]},
-  "Villa Santa Rita":{"precio_venta": [2500, 2800, 3200], "precio_local_pb": [2800, 3200, 3600], "costo_directo": [1250, 1500, 1830], "inc_vendible": [350, 430, 580], "lote_m2": [1200, 1700, 2600], "usado_m2": [1300, 1800]},
-  "Monte Castro":    {"precio_venta": [2500, 2800, 3200], "precio_local_pb": [2800, 3200, 3600], "costo_directo": [1250, 1500, 1830], "inc_vendible": [350, 430, 580], "lote_m2": [1200, 1700, 2600], "usado_m2": [1300, 1800]},
-  "Flores":          {"precio_venta": [2300, 2600, 3000], "precio_local_pb": [2800, 3200, 3600], "costo_directo": [1250, 1480, 1800], "inc_vendible": [320, 400, 540], "lote_m2": [1000, 1500, 2300], "usado_m2": [1200, 1700]},
-  "Floresta":        {"precio_venta": [2300, 2600, 3000], "precio_local_pb": [2700, 3100, 3500], "costo_directo": [1250, 1480, 1800], "inc_vendible": [320, 400, 540], "lote_m2": [1000, 1500, 2300], "usado_m2": [1200, 1700]},
-  "Velez Sarsfield": {"precio_venta": [2300, 2600, 3000], "precio_local_pb": [2700, 3100, 3500], "costo_directo": [1250, 1480, 1800], "inc_vendible": [320, 400, 540], "lote_m2": [1000, 1500, 2300], "usado_m2": [1200, 1700]},
-  "Villa Luro":      {"precio_venta": [2300, 2600, 3000], "precio_local_pb": [2700, 3100, 3500], "costo_directo": [1250, 1480, 1800], "inc_vendible": [320, 400, 540], "lote_m2": [1000, 1500, 2300], "usado_m2": [1200, 1700]},
-  "Liniers":         {"precio_venta": [2200, 2500, 2900], "precio_local_pb": [2600, 3000, 3400], "costo_directo": [1250, 1480, 1800], "inc_vendible": [300, 380, 520], "lote_m2": [900, 1400, 2100], "usado_m2": [1100, 1600]},
-  "Versalles":       {"precio_venta": [2200, 2500, 2900], "precio_local_pb": [2600, 3000, 3400], "costo_directo": [1250, 1480, 1800], "inc_vendible": [300, 380, 520], "lote_m2": [900, 1400, 2100], "usado_m2": [1100, 1600]},
-  "Villa Real":      {"precio_venta": [2200, 2500, 2900], "precio_local_pb": [2600, 3000, 3400], "costo_directo": [1250, 1480, 1800], "inc_vendible": [300, 380, 520], "lote_m2": [900, 1400, 2100], "usado_m2": [1100, 1600]},
-  "Mataderos":       {"precio_venta": [2100, 2400, 2800], "precio_local_pb": [2500, 2900, 3300], "costo_directo": [1230, 1460, 1780], "inc_vendible": [280, 360, 500], "lote_m2": [800, 1200, 1900], "usado_m2": [1000, 1500]},
-  "Parque Avellaneda":{"precio_venta": [2100, 2400, 2800], "precio_local_pb": [2500, 2900, 3300], "costo_directo": [1230, 1460, 1780], "inc_vendible": [280, 360, 500], "lote_m2": [800, 1200, 1900], "usado_m2": [1000, 1500]},
-  "Parque Chacabuco":{"precio_venta": [2400, 2700, 3100], "precio_local_pb": [2800, 3200, 3600], "costo_directo": [1250, 1480, 1800], "inc_vendible": [330, 410, 560], "lote_m2": [1100, 1600, 2400], "usado_m2": [1300, 1800]},
-  "Boedo":           {"precio_venta": [2300, 2600, 3000], "precio_local_pb": [2800, 3200, 3600], "costo_directo": [1250, 1480, 1800], "inc_vendible": [320, 400, 540], "lote_m2": [1000, 1500, 2300], "usado_m2": [1200, 1700]},
-  "San Cristobal":   {"precio_venta": [2300, 2600, 3000], "precio_local_pb": [2800, 3200, 3600], "costo_directo": [1250, 1480, 1800], "inc_vendible": [320, 400, 540], "lote_m2": [1000, 1500, 2300], "usado_m2": [1200, 1700]},
-  "Balvanera":       {"precio_venta": [2300, 2600, 3000], "precio_local_pb": [3000, 3400, 3800], "costo_directo": [1250, 1480, 1800], "inc_vendible": [320, 400, 540], "lote_m2": [1000, 1500, 2300], "usado_m2": [1200, 1700]},
-  "Monserrat":       {"precio_venta": [2400, 2700, 3100], "precio_local_pb": [3000, 3400, 3800], "costo_directo": [1250, 1480, 1800], "inc_vendible": [330, 410, 560], "lote_m2": [1100, 1600, 2400], "usado_m2": [1300, 1800]},
-  "San Nicolas":     {"precio_venta": [2500, 2800, 3200], "precio_local_pb": [3200, 3600, 4000], "costo_directo": [1260, 1500, 1830], "inc_vendible": [350, 430, 580], "lote_m2": [1200, 1700, 2600], "usado_m2": [1300, 1800]},
-  "San Telmo":       {"precio_venta": [2500, 2800, 3200], "precio_local_pb": [3000, 3400, 3800], "costo_directo": [1260, 1500, 1830], "inc_vendible": [350, 430, 580], "lote_m2": [1200, 1700, 2600], "usado_m2": [1300, 1800]},
-  "Retiro":          {"precio_venta": [3200, 3600, 4100], "precio_local_pb": [3800, 4300, 4800], "costo_directo": [1350, 1600, 1950], "inc_vendible": [500, 620, 820], "lote_m2": [2400, 3300, 5000], "usado_m2": [2000, 2700]},
-  "Puerto Madero":   {"precio_venta": [5000, 5600, 6500], "precio_local_pb": [5500, 6200, 7000], "costo_directo": [1500, 1800, 2200], "inc_vendible": [900, 1100, 1500], "lote_m2": [4000, 6000, 9000], "usado_m2": [3800, 5000]},
-  "Constitucion":    {"precio_venta": [2100, 2400, 2800], "precio_local_pb": [2600, 3000, 3400], "costo_directo": [1230, 1460, 1780], "inc_vendible": [280, 360, 500], "lote_m2": [800, 1200, 1900], "usado_m2": [1000, 1400]},
-  "Barracas":        {"precio_venta": [2100, 2400, 2800], "precio_local_pb": [2500, 2900, 3300], "costo_directo": [1230, 1460, 1780], "inc_vendible": [280, 360, 500], "lote_m2": [800, 1200, 1900], "usado_m2": [1000, 1400]},
-  "Parque Patricios":{"precio_venta": [2100, 2400, 2800], "precio_local_pb": [2500, 2900, 3300], "costo_directo": [1230, 1460, 1780], "inc_vendible": [280, 360, 500], "lote_m2": [800, 1200, 1900], "usado_m2": [1000, 1400]},
-  "La Boca":         {"precio_venta": [1700, 1900, 2100], "precio_local_pb": [2000, 2300, 2600], "costo_directo": [1200, 1430, 1750], "inc_vendible": [200, 260, 380], "lote_m2": [250, 400, 520], "usado_m2": [600, 800], "nucleo_m2": 22},
-  "Nueva Pompeya":   {"precio_venta": [1800, 2000, 2300], "precio_local_pb": [2100, 2400, 2700], "costo_directo": [1200, 1430, 1750], "inc_vendible": [220, 280, 400], "lote_m2": [450, 700, 1100], "usado_m2": [700, 1000]},
-  "Villa Soldati":   {"precio_venta": [1700, 1900, 2200], "precio_local_pb": [2000, 2300, 2600], "costo_directo": [1200, 1430, 1750], "inc_vendible": [200, 260, 380], "lote_m2": [350, 550, 900], "usado_m2": [600, 900]},
-  "Villa Lugano":    {"precio_venta": [1700, 1900, 2200], "precio_local_pb": [2000, 2300, 2600], "costo_directo": [1200, 1430, 1750], "inc_vendible": [200, 260, 380], "lote_m2": [350, 550, 900], "usado_m2": [600, 900]},
-  "Villa Riachuelo": {"precio_venta": [1700, 1900, 2200], "precio_local_pb": [2000, 2300, 2600], "costo_directo": [1200, 1430, 1750], "inc_vendible": [200, 260, 380], "lote_m2": [350, 550, 900], "usado_m2": [600, 900]}
- }
+  "Belgrano": {
+   "precio_venta": [
+    3350.0,
+    3670.0,
+    4140.0
+   ],
+   "precio_local_pb": [
+    3750.0,
+    4110.0,
+    4640.0
+   ],
+   "costo_directo": [
+    1300,
+    1550,
+    1900
+   ],
+   "inc_vendible": [
+    460,
+    560,
+    740
+   ],
+   "lote_m2": [
+    3000,
+    4280,
+    5400
+   ],
+   "usado_m2": [
+    2000,
+    2600
+   ]
+  },
+  "Nuñez": {
+   "precio_venta": [
+    3080.0,
+    3380.0,
+    3810.0
+   ],
+   "precio_local_pb": [
+    3450.0,
+    3790.0,
+    4270.0
+   ],
+   "costo_directo": [
+    1300,
+    1550,
+    1900
+   ],
+   "inc_vendible": [
+    460,
+    560,
+    640
+   ],
+   "lote_m2": [
+    2240,
+    3330,
+    4670
+   ],
+   "usado_m2": [
+    2000,
+    2600
+   ]
+  },
+  "Palermo": {
+   "precio_venta": [
+    3310.0,
+    3630.0,
+    4090.0
+   ],
+   "precio_local_pb": [
+    3710.0,
+    4070.0,
+    4580.0
+   ],
+   "costo_directo": [
+    1350,
+    1600,
+    1950
+   ],
+   "inc_vendible": [
+    520,
+    660,
+    900
+   ],
+   "lote_m2": [
+    2490,
+    3790,
+    5000
+   ],
+   "usado_m2": [
+    2100,
+    2800
+   ]
+  },
+  "Recoleta": {
+   "precio_venta": [
+    3550.0,
+    3900.0,
+    4390.0
+   ],
+   "precio_local_pb": [
+    3980.0,
+    4370.0,
+    4920.0
+   ],
+   "costo_directo": [
+    1350,
+    1600,
+    1950
+   ],
+   "inc_vendible": [
+    560,
+    630,
+    760
+   ],
+   "lote_m2": [
+    4010,
+    5150,
+    6060
+   ],
+   "usado_m2": [
+    2100,
+    2700
+   ]
+  },
+  "Colegiales": {
+   "precio_venta": [
+    2790.0,
+    3050.0,
+    3440.0
+   ],
+   "precio_local_pb": [
+    3120.0,
+    3420.0,
+    3850.0
+   ],
+   "costo_directo": [
+    1300,
+    1550,
+    1900
+   ],
+   "inc_vendible": [
+    510,
+    650,
+    790
+   ],
+   "lote_m2": [
+    2040,
+    2500,
+    3460
+   ],
+   "usado_m2": [
+    1900,
+    2400
+   ]
+  },
+  "Villa Urquiza": {
+   "precio_venta": [
+    2790.0,
+    3050.0,
+    3440.0
+   ],
+   "precio_local_pb": [
+    3120.0,
+    3420.0,
+    3850.0
+   ],
+   "costo_directo": [
+    1280,
+    1520,
+    1850
+   ],
+   "inc_vendible": [
+    390,
+    480,
+    600
+   ],
+   "lote_m2": [
+    1310,
+    1900,
+    2620
+   ],
+   "usado_m2": [
+    1700,
+    2200
+   ]
+  },
+  "Coghlan": {
+   "precio_venta": [
+    2530.0,
+    2780.0,
+    3130.0
+   ],
+   "precio_local_pb": [
+    2830.0,
+    3110.0,
+    3510.0
+   ],
+   "costo_directo": [
+    1280,
+    1520,
+    1850
+   ],
+   "inc_vendible": [
+    380,
+    490,
+    550
+   ],
+   "lote_m2": [
+    1580,
+    2170,
+    2710
+   ],
+   "usado_m2": [
+    1700,
+    2200
+   ]
+  },
+  "Saavedra": {
+   "precio_venta": [
+    2500.0,
+    2750.0,
+    3100.0
+   ],
+   "precio_local_pb": [
+    2800.0,
+    3080.0,
+    3470.0
+   ],
+   "costo_directo": [
+    1280,
+    1520,
+    1850
+   ],
+   "inc_vendible": [
+    380,
+    470,
+    580
+   ],
+   "lote_m2": [
+    1370,
+    1780,
+    2430
+   ],
+   "usado_m2": [
+    1700,
+    2200
+   ]
+  },
+  "Villa Pueyrredon": {
+   "precio_venta": [
+    2490.0,
+    2730.0,
+    3080.0
+   ],
+   "precio_local_pb": [
+    2790.0,
+    3060.0,
+    3450.0
+   ],
+   "costo_directo": [
+    1260,
+    1500,
+    1830
+   ],
+   "inc_vendible": [
+    330,
+    420,
+    510
+   ],
+   "lote_m2": [
+    930,
+    1190,
+    1750
+   ],
+   "usado_m2": [
+    1500,
+    2000
+   ]
+  },
+  "Caballito": {
+   "precio_venta": [
+    2610.0,
+    2860.0,
+    3220.0
+   ],
+   "precio_local_pb": [
+    2920.0,
+    3200.0,
+    3610.0
+   ],
+   "costo_directo": [
+    1280,
+    1520,
+    1850
+   ],
+   "inc_vendible": [
+    350,
+    440,
+    570
+   ],
+   "lote_m2": [
+    1430,
+    2170,
+    3090
+   ],
+   "usado_m2": [
+    1600,
+    2100
+   ]
+  },
+  "Villa Crespo": {
+   "precio_venta": [
+    2480.0,
+    2730.0,
+    3070.0
+   ],
+   "precio_local_pb": [
+    2780.0,
+    3060.0,
+    3440.0
+   ],
+   "costo_directo": [
+    1280,
+    1520,
+    1850
+   ],
+   "inc_vendible": [
+    350,
+    420,
+    510
+   ],
+   "lote_m2": [
+    1630,
+    2350,
+    3450
+   ],
+   "usado_m2": [
+    1600,
+    2100
+   ]
+  },
+  "Chacarita": {
+   "precio_venta": [
+    2460.0,
+    2700.0,
+    3040.0
+   ],
+   "precio_local_pb": [
+    2760.0,
+    3020.0,
+    3400.0
+   ],
+   "costo_directo": [
+    1280,
+    1520,
+    1850
+   ],
+   "inc_vendible": [
+    410,
+    480,
+    600
+   ],
+   "lote_m2": [
+    1520,
+    2470,
+    3260
+   ],
+   "usado_m2": [
+    1500,
+    2000
+   ]
+  },
+  "Villa Ortuzar": {
+   "precio_venta": [
+    2270.0,
+    2490.0,
+    2810.0
+   ],
+   "precio_local_pb": [
+    2540.0,
+    2790.0,
+    3150.0
+   ],
+   "costo_directo": [
+    1260,
+    1500,
+    1830
+   ],
+   "inc_vendible": [
+    420,
+    500,
+    590
+   ],
+   "lote_m2": [
+    1340,
+    1900,
+    2670
+   ],
+   "usado_m2": [
+    1500,
+    2000
+   ]
+  },
+  "Almagro": {
+   "precio_venta": [
+    2400.0,
+    2630.0,
+    2970.0
+   ],
+   "precio_local_pb": [
+    2690.0,
+    2950.0,
+    3330.0
+   ],
+   "costo_directo": [
+    1260,
+    1500,
+    1830
+   ],
+   "inc_vendible": [
+    310,
+    380,
+    510
+   ],
+   "lote_m2": [
+    1480,
+    2010,
+    2650
+   ],
+   "usado_m2": [
+    1500,
+    2000
+   ]
+  },
+  "Villa Devoto": {
+   "precio_venta": [
+    2440.0,
+    2680.0,
+    3020.0
+   ],
+   "precio_local_pb": [
+    2730.0,
+    3000.0,
+    3380.0
+   ],
+   "costo_directo": [
+    1260,
+    1500,
+    1830
+   ],
+   "inc_vendible": [
+    330,
+    480,
+    660
+   ],
+   "lote_m2": [
+    1190,
+    1650,
+    2310
+   ],
+   "usado_m2": [
+    1500,
+    2000
+   ]
+  },
+  "Villa Del Parque": {
+   "precio_venta": [
+    2130.0,
+    2340.0,
+    2640.0
+   ],
+   "precio_local_pb": [
+    2390.0,
+    2620.0,
+    2960.0
+   ],
+   "costo_directo": [
+    1260,
+    1500,
+    1830
+   ],
+   "inc_vendible": [
+    310,
+    400,
+    540
+   ],
+   "lote_m2": [
+    1010,
+    1380,
+    1890
+   ],
+   "usado_m2": [
+    1400,
+    1900
+   ]
+  },
+  "Agronomia": {
+   "precio_venta": [
+    2600,
+    2900,
+    3300
+   ],
+   "precio_local_pb": [
+    2900,
+    3300,
+    3700
+   ],
+   "costo_directo": [
+    1260,
+    1500,
+    1830
+   ],
+   "inc_vendible": [
+    240,
+    310,
+    420
+   ],
+   "lote_m2": [
+    1050,
+    1370,
+    2180
+   ],
+   "usado_m2": [
+    1400,
+    1900
+   ]
+  },
+  "Parque Chas": {
+   "precio_venta": [
+    2110.0,
+    2320.0,
+    2610.0
+   ],
+   "precio_local_pb": [
+    2360.0,
+    2600.0,
+    2920.0
+   ],
+   "costo_directo": [
+    1260,
+    1500,
+    1830
+   ],
+   "inc_vendible": [
+    320,
+    380,
+    670
+   ],
+   "lote_m2": [
+    1020,
+    1290,
+    1580
+   ],
+   "usado_m2": [
+    1400,
+    1900
+   ]
+  },
+  "Paternal": {
+   "precio_venta": [
+    2150.0,
+    2360.0,
+    2660.0
+   ],
+   "precio_local_pb": [
+    2410.0,
+    2640.0,
+    2980.0
+   ],
+   "costo_directo": [
+    1250,
+    1500,
+    1830
+   ],
+   "inc_vendible": [
+    240,
+    300,
+    340
+   ],
+   "lote_m2": [
+    890,
+    1150,
+    1450
+   ],
+   "usado_m2": [
+    1300,
+    1800
+   ]
+  },
+  "Villa Gral. Mitre": {
+   "precio_venta": [
+    1990.0,
+    2180.0,
+    2460.0
+   ],
+   "precio_local_pb": [
+    2230.0,
+    2440.0,
+    2760.0
+   ],
+   "costo_directo": [
+    1250,
+    1500,
+    1830
+   ],
+   "inc_vendible": [
+    300,
+    320,
+    350
+   ],
+   "lote_m2": [
+    840,
+    990,
+    1560
+   ],
+   "usado_m2": [
+    1300,
+    1800
+   ]
+  },
+  "Villa Santa Rita": {
+   "precio_venta": [
+    2060.0,
+    2260.0,
+    2540.0
+   ],
+   "precio_local_pb": [
+    2310.0,
+    2530.0,
+    2840.0
+   ],
+   "costo_directo": [
+    1250,
+    1500,
+    1830
+   ],
+   "inc_vendible": [
+    210,
+    310,
+    400
+   ],
+   "lote_m2": [
+    930,
+    1230,
+    1790
+   ],
+   "usado_m2": [
+    1300,
+    1800
+   ]
+  },
+  "Monte Castro": {
+   "precio_venta": [
+    2110.0,
+    2310.0,
+    2610.0
+   ],
+   "precio_local_pb": [
+    2360.0,
+    2590.0,
+    2920.0
+   ],
+   "costo_directo": [
+    1250,
+    1500,
+    1830
+   ],
+   "inc_vendible": [
+    250,
+    320,
+    400
+   ],
+   "lote_m2": [
+    840,
+    1080,
+    1340
+   ],
+   "usado_m2": [
+    1300,
+    1800
+   ]
+  },
+  "Flores": {
+   "precio_venta": [
+    2170.0,
+    2380.0,
+    2680.0
+   ],
+   "precio_local_pb": [
+    2430.0,
+    2670.0,
+    3000.0
+   ],
+   "costo_directo": [
+    1250,
+    1480,
+    1800
+   ],
+   "inc_vendible": [
+    240,
+    310,
+    400
+   ],
+   "lote_m2": [
+    1120,
+    1560,
+    2150
+   ],
+   "usado_m2": [
+    1200,
+    1700
+   ]
+  },
+  "Floresta": {
+   "precio_venta": [
+    1870.0,
+    2050.0,
+    2310.0
+   ],
+   "precio_local_pb": [
+    2090.0,
+    2300.0,
+    2590.0
+   ],
+   "costo_directo": [
+    1250,
+    1480,
+    1800
+   ],
+   "inc_vendible": [
+    220,
+    270,
+    330
+   ],
+   "lote_m2": [
+    930,
+    1290,
+    1760
+   ],
+   "usado_m2": [
+    1200,
+    1700
+   ]
+  },
+  "Velez Sarsfield": {
+   "precio_venta": [
+    1990.0,
+    2190.0,
+    2460.0
+   ],
+   "precio_local_pb": [
+    2230.0,
+    2450.0,
+    2760.0
+   ],
+   "costo_directo": [
+    1250,
+    1480,
+    1800
+   ],
+   "inc_vendible": [
+    220,
+    270,
+    390
+   ],
+   "lote_m2": [
+    750,
+    990,
+    1300
+   ],
+   "usado_m2": [
+    1200,
+    1700
+   ]
+  },
+  "Villa Luro": {
+   "precio_venta": [
+    2030.0,
+    2230.0,
+    2510.0
+   ],
+   "precio_local_pb": [
+    2270.0,
+    2500.0,
+    2810.0
+   ],
+   "costo_directo": [
+    1250,
+    1480,
+    1800
+   ],
+   "inc_vendible": [
+    260,
+    320,
+    450
+   ],
+   "lote_m2": [
+    910,
+    1300,
+    1720
+   ],
+   "usado_m2": [
+    1200,
+    1700
+   ]
+  },
+  "Liniers": {
+   "precio_venta": [
+    2110.0,
+    2320.0,
+    2610.0
+   ],
+   "precio_local_pb": [
+    2360.0,
+    2600.0,
+    2920.0
+   ],
+   "costo_directo": [
+    1250,
+    1480,
+    1800
+   ],
+   "inc_vendible": [
+    260,
+    310,
+    390
+   ],
+   "lote_m2": [
+    890,
+    1120,
+    1490
+   ],
+   "usado_m2": [
+    1100,
+    1600
+   ]
+  },
+  "Versalles": {
+   "precio_venta": [
+    2200,
+    2500,
+    2900
+   ],
+   "precio_local_pb": [
+    2600,
+    3000,
+    3400
+   ],
+   "costo_directo": [
+    1250,
+    1480,
+    1800
+   ],
+   "inc_vendible": [
+    260,
+    330,
+    1060
+   ],
+   "lote_m2": [
+    820,
+    920,
+    1090
+   ],
+   "usado_m2": [
+    1100,
+    1600
+   ]
+  },
+  "Villa Real": {
+   "precio_venta": [
+    2200,
+    2500,
+    2900
+   ],
+   "precio_local_pb": [
+    2600,
+    3000,
+    3400
+   ],
+   "costo_directo": [
+    1250,
+    1480,
+    1800
+   ],
+   "inc_vendible": [
+    560,
+    710,
+    1120
+   ],
+   "lote_m2": [
+    910,
+    1050,
+    1520
+   ],
+   "usado_m2": [
+    1100,
+    1600
+   ]
+  },
+  "Mataderos": {
+   "precio_venta": [
+    1650.0,
+    1810.0,
+    2040.0
+   ],
+   "precio_local_pb": [
+    1850.0,
+    2030.0,
+    2280.0
+   ],
+   "costo_directo": [
+    1230,
+    1460,
+    1780
+   ],
+   "inc_vendible": [
+    210,
+    260,
+    380
+   ],
+   "lote_m2": [
+    690,
+    880,
+    1200
+   ],
+   "usado_m2": [
+    1000,
+    1500
+   ]
+  },
+  "Parque Avellaneda": {
+   "precio_venta": [
+    1700.0,
+    1860.0,
+    2100.0
+   ],
+   "precio_local_pb": [
+    1900.0,
+    2080.0,
+    2350.0
+   ],
+   "costo_directo": [
+    1230,
+    1460,
+    1780
+   ],
+   "inc_vendible": [
+    200,
+    240,
+    340
+   ],
+   "lote_m2": [
+    620,
+    820,
+    1100
+   ],
+   "usado_m2": [
+    1000,
+    1500
+   ]
+  },
+  "Parque Chacabuco": {
+   "precio_venta": [
+    1780.0,
+    1960.0,
+    2210.0
+   ],
+   "precio_local_pb": [
+    1990.0,
+    2200.0,
+    2480.0
+   ],
+   "costo_directo": [
+    1250,
+    1480,
+    1800
+   ],
+   "inc_vendible": [
+    240,
+    310,
+    380
+   ],
+   "lote_m2": [
+    920,
+    1220,
+    1960
+   ],
+   "usado_m2": [
+    1300,
+    1800
+   ]
+  },
+  "Boedo": {
+   "precio_venta": [
+    2030.0,
+    2230.0,
+    2520.0
+   ],
+   "precio_local_pb": [
+    2270.0,
+    2500.0,
+    2820.0
+   ],
+   "costo_directo": [
+    1250,
+    1480,
+    1800
+   ],
+   "inc_vendible": [
+    220,
+    270,
+    340
+   ],
+   "lote_m2": [
+    960,
+    1300,
+    1870
+   ],
+   "usado_m2": [
+    1200,
+    1700
+   ]
+  },
+  "San Cristobal": {
+   "precio_venta": [
+    1890.0,
+    2080.0,
+    2340.0
+   ],
+   "precio_local_pb": [
+    2120.0,
+    2330.0,
+    2620.0
+   ],
+   "costo_directo": [
+    1250,
+    1480,
+    1800
+   ],
+   "inc_vendible": [
+    210,
+    260,
+    330
+   ],
+   "lote_m2": [
+    950,
+    1360,
+    1830
+   ],
+   "usado_m2": [
+    1200,
+    1700
+   ]
+  },
+  "Balvanera": {
+   "precio_venta": [
+    2020.0,
+    2220.0,
+    2500.0
+   ],
+   "precio_local_pb": [
+    2260.0,
+    2490.0,
+    2800.0
+   ],
+   "costo_directo": [
+    1250,
+    1480,
+    1800
+   ],
+   "inc_vendible": [
+    210,
+    320,
+    420
+   ],
+   "lote_m2": [
+    1120,
+    1820,
+    2480
+   ],
+   "usado_m2": [
+    1200,
+    1700
+   ]
+  },
+  "Monserrat": {
+   "precio_venta": [
+    2320.0,
+    2540.0,
+    2870.0
+   ],
+   "precio_local_pb": [
+    2600.0,
+    2840.0,
+    3210.0
+   ],
+   "costo_directo": [
+    1250,
+    1480,
+    1800
+   ],
+   "inc_vendible": [
+    220,
+    270,
+    410
+   ],
+   "lote_m2": [
+    1050,
+    1490,
+    2380
+   ],
+   "usado_m2": [
+    1300,
+    1800
+   ]
+  },
+  "San Nicolas": {
+   "precio_venta": [
+    1710.0,
+    1880.0,
+    2120.0
+   ],
+   "precio_local_pb": [
+    1920.0,
+    2110.0,
+    2370.0
+   ],
+   "costo_directo": [
+    1260,
+    1500,
+    1830
+   ],
+   "inc_vendible": [
+    280,
+    360,
+    420
+   ],
+   "lote_m2": [
+    1280,
+    2180,
+    4030
+   ],
+   "usado_m2": [
+    1300,
+    1800
+   ]
+  },
+  "San Telmo": {
+   "precio_venta": [
+    2110.0,
+    2320.0,
+    2610.0
+   ],
+   "precio_local_pb": [
+    2360.0,
+    2600.0,
+    2920.0
+   ],
+   "costo_directo": [
+    1260,
+    1500,
+    1830
+   ],
+   "inc_vendible": [
+    290,
+    310,
+    440
+   ],
+   "lote_m2": [
+    870,
+    1510,
+    2190
+   ],
+   "usado_m2": [
+    1300,
+    1800
+   ]
+  },
+  "Retiro": {
+   "precio_venta": [
+    3550.0,
+    3900.0,
+    4400.0
+   ],
+   "precio_local_pb": [
+    3980.0,
+    4370.0,
+    4930.0
+   ],
+   "costo_directo": [
+    1350,
+    1600,
+    1950
+   ],
+   "inc_vendible": [
+    390,
+    550,
+    630
+   ],
+   "lote_m2": [
+    3150,
+    3750,
+    4440
+   ],
+   "usado_m2": [
+    2000,
+    2700
+   ]
+  },
+  "Puerto Madero": {
+   "precio_venta": [
+    6610.0,
+    7250.0,
+    8170.0
+   ],
+   "precio_local_pb": [
+    7400.0,
+    8120.0,
+    9150.0
+   ],
+   "costo_directo": [
+    1500,
+    1800,
+    2200
+   ],
+   "inc_vendible": [
+    900,
+    1100,
+    1500
+   ],
+   "lote_m2": [
+    4000,
+    6000,
+    9000
+   ],
+   "usado_m2": [
+    3800,
+    5000
+   ]
+  },
+  "Constitucion": {
+   "precio_venta": [
+    1850.0,
+    2030.0,
+    2280.0
+   ],
+   "precio_local_pb": [
+    2070.0,
+    2270.0,
+    2550.0
+   ],
+   "costo_directo": [
+    1230,
+    1460,
+    1780
+   ],
+   "inc_vendible": [
+    180,
+    220,
+    270
+   ],
+   "lote_m2": [
+    710,
+    1300,
+    1760
+   ],
+   "usado_m2": [
+    1000,
+    1400
+   ]
+  },
+  "Barracas": {
+   "precio_venta": [
+    2030.0,
+    2220.0,
+    2500.0
+   ],
+   "precio_local_pb": [
+    2270.0,
+    2490.0,
+    2800.0
+   ],
+   "costo_directo": [
+    1230,
+    1460,
+    1780
+   ],
+   "inc_vendible": [
+    200,
+    270,
+    370
+   ],
+   "lote_m2": [
+    550,
+    940,
+    1710
+   ],
+   "usado_m2": [
+    1000,
+    1400
+   ]
+  },
+  "Parque Patricios": {
+   "precio_venta": [
+    1710.0,
+    1880.0,
+    2120.0
+   ],
+   "precio_local_pb": [
+    1920.0,
+    2110.0,
+    2370.0
+   ],
+   "costo_directo": [
+    1230,
+    1460,
+    1780
+   ],
+   "inc_vendible": [
+    190,
+    260,
+    340
+   ],
+   "lote_m2": [
+    680,
+    1120,
+    1660
+   ],
+   "usado_m2": [
+    1000,
+    1400
+   ]
+  },
+  "La Boca": {
+   "precio_venta": [
+    1620.0,
+    1770.0,
+    2000.0
+   ],
+   "precio_local_pb": [
+    1810.0,
+    1980.0,
+    2240.0
+   ],
+   "costo_directo": [
+    1200,
+    1430,
+    1750
+   ],
+   "inc_vendible": [
+    170,
+    220,
+    250
+   ],
+   "lote_m2": [
+    420,
+    670,
+    1290
+   ],
+   "usado_m2": [
+    600,
+    800
+   ],
+   "nucleo_m2": 22
+  },
+  "Nueva Pompeya": {
+   "precio_venta": [
+    1800,
+    2000,
+    2300
+   ],
+   "precio_local_pb": [
+    2100,
+    2400,
+    2700
+   ],
+   "costo_directo": [
+    1200,
+    1430,
+    1750
+   ],
+   "inc_vendible": [
+    180,
+    220,
+    250
+   ],
+   "lote_m2": [
+    520,
+    680,
+    1190
+   ],
+   "usado_m2": [
+    700,
+    1000
+   ]
+  },
+  "Villa Soldati": {
+   "precio_venta": [
+    1700,
+    1900,
+    2200
+   ],
+   "precio_local_pb": [
+    2000,
+    2300,
+    2600
+   ],
+   "costo_directo": [
+    1200,
+    1430,
+    1750
+   ],
+   "inc_vendible": [
+    200,
+    260,
+    380
+   ],
+   "lote_m2": [
+    520,
+    640,
+    680
+   ],
+   "usado_m2": [
+    600,
+    900
+   ]
+  },
+  "Villa Lugano": {
+   "precio_venta": [
+    1770.0,
+    1940.0,
+    2190.0
+   ],
+   "precio_local_pb": [
+    1980.0,
+    2170.0,
+    2450.0
+   ],
+   "costo_directo": [
+    1200,
+    1430,
+    1750
+   ],
+   "inc_vendible": [
+    210,
+    280,
+    340
+   ],
+   "lote_m2": [
+    490,
+    550,
+    950
+   ],
+   "usado_m2": [
+    600,
+    900
+   ]
+  },
+  "Villa Riachuelo": {
+   "precio_venta": [
+    1700,
+    1900,
+    2200
+   ],
+   "precio_local_pb": [
+    2000,
+    2300,
+    2600
+   ],
+   "costo_directo": [
+    1200,
+    1430,
+    1750
+   ],
+   "inc_vendible": [
+    200,
+    260,
+    380
+   ],
+   "lote_m2": [
+    470,
+    600,
+    1290
+   ],
+   "usado_m2": [
+    600,
+    900
+   ]
+  }
+ },
+ "_historial": [
+  {
+   "fecha": "2026-10-04",
+   "cambios": [
+    "UVA: 2114.62 → 2142.08 (2026-10-04)",
+    "MEP: 1532.39 → 1547.75 (2026-10-03)",
+    "A estrenar actualizados en 42 barrios; lotes en 47 barrios"
+   ],
+   "alertas": 19,
+   "pendientes": 8
+  }
+ ]
 }

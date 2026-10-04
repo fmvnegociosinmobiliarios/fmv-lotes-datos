@@ -8,7 +8,12 @@ Se corre el día 1 de cada mes, después del relevamiento del tasador, en el Chr
 
 ## 2. Relevar en Zonaprop, barrio por barrio (48 barrios), con pausas de 4,5 s entre páginas (Cloudflare corta a las ~12 páginas seguidas)
 
-Para cada barrio se arma `relevamiento_lotes.json` con esta forma:
+**Método probado el 04/10/2026 (tarda ~60 min para los 48 barrios):** abrir una pestaña de Zonaprop en el Chrome de Fernando y, con la herramienta de JavaScript de Claude en Chrome, correr un bucle dentro de la página que hace `fetch()` de cada listado (misma sesión, sin navegar) y lo parsea con `DOMParser`: cards `div[data-qa="posting PROPERTY"]`, precio `[data-qa="POSTING_CARD_PRICE"]`, m² en `[data-qa="POSTING_CARD_FEATURES"] span` ("840 m² tot."), dirección `[class*="ddress"]`, ubicación `[data-qa="POSTING_CARD_LOCATION"]`, descripción `[data-qa="POSTING_CARD_DESCRIPTION"]` (de ahí salen los m² vendibles y la altura declarada), link `a[href*="/propiedades/"]` sin query string. Guardar todo en `window.__fmv` y, al final, bajarlo como JSON con un `<a download>` (Chrome permite UNA descarga automática por sitio: si hace falta una segunda, pedirle a Fernando que la acepte en el ícono de la barra de direcciones). Después `python3 procesar_relevamiento.py volcado.json relevamientos/AAAA-MM/` genera `relevamiento_lotes.json` y `lotes_avisos.csv` (filtra por ubicación = barrio, deduplica por url, descarta m² < 80 o > 2.000 y USD/m² fuera de 150–15.000).
+
+URLs: terrenos `/terrenos-venta-<slug>.html` y páginas `-pagina-N.html` (cortar cuando una página trae menos de 30 cards o al llegar a 10; más allá del total real Zonaprop repite avisos y rellena con barrios vecinos, por eso el filtro por ubicación). Unidades nuevas: NO usar `-a-estrenar` (devuelve emprendimientos con precio "desde"); usar `/departamentos-venta-<slug>-hasta-5-anos.html`, 3 páginas. Slugs distintos del nombre: La Boca = `la-boca`, Nueva Pompeya = `pompeya`, Paternal = `la-paternal`, Núñez = `nunez`, Villa Gral. Mitre = `villa-general-mitre`; el resto es el nombre en minúsculas con guiones y sin tildes.
+
+
+`procesar_relevamiento.py` arma `relevamiento_lotes.json` con esta forma (si se releva de otra manera, respetarla):
 
 ```json
 {"fecha": "2026-11-01",
@@ -37,7 +42,7 @@ python3 actualizar_mercado.py --tasador ../fmv-web/data/mercado.json --lotes rel
 
 El script baja UVA y dólar MEP solo, escribe `mercado.json` y `actualizacion_resumen.md`. Controles antes de publicar:
 - `mercado.json` tiene que seguir siendo JSON válido con los 48 barrios y las mismas claves.
-- Si hay más de 10 barrios en "Alertas" (saltos > 25 %), NO publicar: avisar a Fernando con el resumen y dejar el relevamiento en `relevamientos/AAAA-MM/`.
+- Si hay más de 10 barrios en "Alertas" (saltos > 25 %) respecto del mes anterior, NO publicar (la primera corrida real fue la de octubre 2026: sus 19 alertas fueron contra valores estimados a mano, no contra un relevamiento): avisar a Fernando con el resumen y dejar el relevamiento en `relevamientos/AAAA-MM/`.
 - Prueba funcional: `python3 motor_fmv.py "Cuba 2494" --out /tmp/m.json` tiene que correr sin error y dar un residual positivo para Belgrano.
 
 ## 5. Publicar
@@ -53,3 +58,7 @@ python3 ranking_lotes.py relevamientos/AAAA-MM/lotes_avisos.csv
 ```
 
 Genera `relevamientos/AAAA-MM/ranking_lotes.md` con los 25 lotes cuyo USD/m² de lote pedido queda más abajo del valor de referencia del barrio (`lote_m2[1]` de `mercado.json`), con la diferencia en %, y una lista aparte de los que publican m² vendibles con incidencia por debajo de `inc_vendible[0]`. Se commitea junto con lo demás y en el mensaje final a Fernando se agregan las 5 primeras oportunidades (barrio, dirección, superficie, precio pedido, % bajo referencia) con su link. Son candidatos para pedir "informe de lote de <dirección>", no una recomendación de compra.
+
+## 7. Si se sube por la web de GitHub (sin git)
+
+El formulario de subida no crea carpetas: en ese caso los archivos del mes van en la raíz con el prefijo `rel_AAAA-MM_` (`rel_2026-10_relevamiento_lotes.json`, `rel_2026-10_lotes_avisos.csv`, `rel_2026-10_ranking_lotes.md`). La tarea automática, que usa git, los deja en `relevamientos/AAAA-MM/`.
