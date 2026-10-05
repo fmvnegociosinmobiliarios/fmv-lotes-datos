@@ -30,7 +30,7 @@ W, H = A4
 BLACK = colors.HexColor("#0b0b0c"); INK = colors.HexColor("#141416"); GOLD = colors.HexColor("#c9a227"); GOLD2 = colors.HexColor("#e6c766"); GOLD_D = colors.HexColor("#8f7119")
 PAPER = colors.HexColor("#f7f5f0"); GREY = colors.HexColor("#6b6b6b"); LINE = colors.HexColor("#d9d4c7"); TEXT = colors.HexColor("#1a1a1a"); CREAM = colors.HexColor("#efe9d8"); SOFT = colors.HexColor("#f1ede3")
 FIRMA = "Fernando M. Veiga"; CARGO = "Corredor Inmobiliario y Martillero Público · CUCICBA 9981"; EMPRESA = "FMV SOLUCIONES INMOBILIARIAS"
-TEL = "+54 9 11 6851-1494"; MAIL = "fmvnegociosinmobiliarios@gmail.com"; WEB = "fmvbrokers.com.ar"; WA = "https://wa.me/5491168511494?text=Hola%20Fernando,%20le%C3%AD%20el%20informe%20de%20factibilidad"
+TEL = "+54 9 11 6851-1494"; MAIL = "info@fmvbrokers.com.ar"; WEB = "fmvbrokers.com.ar"; WA = "https://wa.me/5491168511494?text=Hola%20Fernando,%20le%C3%AD%20el%20informe%20de%20factibilidad"
 MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
 
 def fmt(x, d=0):
@@ -187,7 +187,8 @@ def preparar_textos(R, T):
     T.setdefault("cabecera", f"{tl} · {R['barrio']} · {T['fecha_corta']}")
     T.setdefault("cliente", "Documento para el propietario")
     T.setdefault("pie_portada", f"Emitido el {T['fecha']} · Código Urbanístico vigente · Datos abiertos GCBA · Mercado relevado el {T['fecha_mercado']} · {T['cliente']}")
-    cap = f"PB + {N['n_tipo']}" + (f" + {m['retiros_utiles']} retiro{'s' if m['retiros_utiles'] > 1 else ''}" if m["retiros_utiles"] else "") + f" · {N['unidad'].split(' – ')[0]}"
+    cap = f"PB + {N['n_tipo']}" + (f" + {N['retiros']} retiro{'s' if N['retiros'] > 1 else ''}" if N["retiros"] else "") + f" · {N['unidad'].split(' – ')[0]}"
+    T.setdefault("retiros_txt", (f"{N['retiros']} retiros admitidos; en este lote el segundo queda por debajo de 25 m² útiles y se proyecta como terraza / SUM" if N["retiros"] > m["retiros_utiles"] else f"{N['retiros']} retiro{'s' if N['retiros'] > 1 else ''} útil{'es' if N['retiros'] > 1 else ''}") if N["retiros"] else "sin retiros")
     if viable:
         T.setdefault("kpis_portada", [("Metros vendibles", f"{fmt(m['vend_cub'])} m²"), ("Valor estimado del lote", rango(m["precio_real"]["piso"], m["precio_real"]["techo"], -4)), ("Capacidad", cap), ("Plazo del negocio", f"{E['plazo']} meses")])
     else:
@@ -249,7 +250,7 @@ def construir(R, T, out):
         S.append(Image(R["mapas"]["manzana"], width=iw, height=ih))
     except Exception: pass
     S.append(P("Fuente: elaboración propia sobre la capa de parcelas (Catastro GCBA, jul-2026) y el Relevamiento de Usos del Suelo 2022-2024 (pisos existentes por parcela). La huella edificable se dibuja a la distancia de la Línea de Frente Interno (25 % del ancho de manzana).", SM))
-    aph_txt = "Sí · " + "; ".join(f"{a.get('denominacion') or a.get('direccion') or ''} ({a.get('proteccion') or a.get('catalogacion') or ''}, {a.get('estado') or ''})" for a in R["aph"][:2]) if R["aph"] else ("Sí (grupo APH según capa CU)" if N["aph"] else "No")
+    aph_txt = ("Sí · " + "; ".join(f"{a.get('denominacion') or a.get('direccion') or ''} ({a.get('proteccion') or a.get('catalogacion') or ''}, {a.get('estado') or ''})" for a in R["aph"] if "DESESTIM" not in ((a.get("estado") or "") + (a.get("proteccion") or "")).upper())[:2]) if N["aph"] else ("No" + (" (hubo una propuesta de catalogación desestimada)" if R["aph"] else ""))
     obras_txt = "; ".join(f"{o['fecha'][:10]} · {o['descripcio'].capitalize()}" for o in R["obras"][:3]) if R["obras"] else "Ninguna desde 2021"
     datos = [["Dato", "Valor", "Fuente"], ["Nomenclatura catastral (SMP)", R["smp"], "Catastro GCBA"], ["Partida matriz", f"{R['partida']}", "Catastro GCBA"],
              ["Superficie de parcela (geometría catastral)", f"{fmt(g['sup'], 1)} m²" + (f" · ochava {fmt(g['ochava_area'], 1)} m²" if g["ochava_area"] else ""), "Parcelas GCBA / cálculo"],
@@ -263,9 +264,10 @@ def construir(R, T, out):
     S.append(tabla(datos, [52 * mm, 86 * mm, 32 * mm]))
     if g["linderos"]:
         S.append(P("Linderos", H2))
-        rows = [["Parcela", "Dirección", "Sup.", "Pisos", "Uso relevado", "Situación"]]
+        rows = [["Parcela", "Dirección", "Sup.", "Pisos", "Uso relevado", "Situación (art. 6.4.2.3 / 6.5.5)"]]
         for l in g["linderos"]:
-            sit = "Edificio: no englobable" if l["edificio"] else ("Lindero de fondo" if l["de_fondo"] else "Englobable en principio")
+            sit = ("Catalogado" if l.get("catalogado") else "Consolidado (fachada ≥ 75 % de su unidad)") if l.get("consolidado") else ("Edificio: no englobable" if l["edificio"] else ("Lindero de fondo" if l["de_fondo"] else "Englobable en principio"))
+            if l.get("supera_unidad"): sit += " · supera la altura de la unidad: completamiento de tejido posible"
             rows.append([l["smp"], l["direccion"], f"{fmt(l['area'])} m²", str(l["pisos"]), l["uso"].replace("/", " · ").title()[:48], sit])
         S.append(tabla(rows, [24 * mm, 42 * mm, 17 * mm, 12 * mm, 45 * mm, 30 * mm]))
     S.append(P(T.get("entorno") or f"<b>Lectura del entorno.</b> La manzana tiene {R['manzana_resumen']['parcelas']} parcelas con una altura promedio de {R['manzana_resumen']['pisos_prom']:.1f} pisos y un máximo de {R['manzana_resumen']['pisos_max']}; "
@@ -276,9 +278,11 @@ def construir(R, T, out):
     c3 = {c["tipo"]: c for c in N["cur3d"]}
     vol = " · ".join(f"{c['tipo']} {fmt(c['h_ini'], 1)}–{fmt(c['h_fin'], 1)} m" for c in N["cur3d"]) or "sin volumetría oficial publicada"
     norm = [["Concepto", "Código de Planeamiento (derogado)", "Código Urbanístico (vigente, norma 31/12/2024)"],
-            ["Distrito / unidad", N.get("dist_cpu") or "–", N["unidad"]], ["Altura", f"Según FOT {fmt(N['fot_cpu'], 2) if N['fot_cpu'] else '–'} y altura de distrito", f"{fmt(N['cuerpo'], 1)} m de cuerpo principal (PB + {N['n_tipo']})" + (f" · {N['retiros']} retiro{'s' if N['retiros'] > 1 else ''} hasta {fmt(N['plano'], 1)} m" if N["retiros"] else "")],
+            ["Distrito / unidad", N.get("dist_cpu") or "–", N["unidad"]], ["Altura (art. " + N.get("art", "6.2") + ")", f"Según FOT {fmt(N['fot_cpu'], 2) if N['fot_cpu'] else '–'} y altura de distrito", f"{fmt(N['cuerpo'], 1)} m de altura máxima (PB + {N['n_tipo']})" + (f" · {N['retiros']} retiros habitables (2 m y 4 m desde la L.O.) hasta el plano límite de {fmt(N['plano'], 1)} m" if N["retiros"] else " · altura máxima = plano límite, sin retiros")],
             ["Volumetría oficial (CUR3D)", "–", vol], ["Capacidad", f"{fmt(m['cap_cpu'])} m² (FOT × superficie)" if m["cap_cpu"] else "–", f"{fmt(m['cub_total'])} m² cubiertos según huella × plantas"],
-            ["Mixtura de usos", "–", N["mixtura_txt"]], ["Línea de Frente Interno", "Centro libre de manzana", f"A {fmt(g['lfi'], 1)} m de la línea oficial (25 % de {fmt(g['ancho_mz'])} m): huella {fmt(g['huella'])} m² de {fmt(g['sup'])} m²"],
+            ["Mixtura de usos", "–", N["mixtura_txt"]], ["Área edificable (art. 6.4.2 / 6.4.3)", "Centro libre de manzana", f"L.F.I. a {fmt(g['lfi'], 1)} m de la línea oficial (¼ de {fmt(g['ancho_mz'])} m" + ("; banda mínima de 16 m" if g['lfi'] <= 16.05 else "") + f"): huella {fmt(g['huella'])} m² de {fmt(g['sup'])} m²" + (f" · L.I.B. a {fmt(g['lib'], 1)} m (⅓): basamento hasta {fmt(g['huella_lib'])} m²" if N.get("basamento") else f" · L.I.B. a {fmt(g['lib'], 1) } m (⅓) sólo para subsuelos")],
+            ["Parcela alcanzada por la L.F.I.", "–", ("Sí: " + fmt(g['fuera_lfi']) + " m² de fondo quedan fuera del área edificable (sólo planta baja / absorbente)") if g.get("alcanzada_lfi") else ("No: toda la parcela es edificable" + ("; al no ser esquina debe dejar espacio urbano de fondo (art. 6.4.2.4) para ventilar el contrafrente" if not g["esquina"] and N["n_tipo"] >= 3 else ""))],
+            ["Proximidad a esquina (art. 6.4.2.3)", "–", (f"A {fmt(g['dist_esquina'], 1)} m del vértice de manzana, dentro de ¼ + 9 m: puede corresponder tronera o separación de 3 m del lindero con área descubierta; verificar en la plancheta" if g.get("proxima_esquina") else ("Parcela de esquina: el perfil de la calle mayor se vuelca sobre la menor sólo en la franja de la L.F.I. (art. 6.4.6)" if g["esquina"] else "No aplica"))],
             ["Plusvalía (Ley 6.062)", "No existía", f"Alícuota {N['alicuota'] * 100:.0f} % · incidencia {fmt(N['inc_uva'])} UVA/m² sobre el excedente de FOT {fmt(N['fot_cpu'], 2) if N['fot_cpu'] else 0}"]]
     S.append(tabla(norm, [40 * mm, 55 * mm, 75 * mm]))
     if T.get("normativa_nota"): S.append(P(T["normativa_nota"]))
@@ -294,16 +298,16 @@ def construir(R, T, out):
     rows.append(["Total", str(m["n_plantas"]), f"{fmt(m['comun'])} m²", f"{fmt(m['vend_cub'])} m²", f"{fmt(m['exp_total'])} m²", f"{fmt(m['cub_total'])} m²", f"{fmt(m['vend_cub'])} m²"])
     S.append(tabla(rows, [44 * mm, 15 * mm, 22 * mm, 24 * mm, 21 * mm, 22 * mm, 22 * mm], bold_rows=(len(rows) - 1,), gold_rows=(len(rows) - 1,)))
     S.append(P(f"Hipótesis: edificio {'de esquina' if g['esquina'] else 'entre medianeras'} con {'dos núcleos' if m['comun'] / max(m['n_plantas'], 1) > 40 else 'un núcleo'} de circulación de {fmt(M.get('nucleo_m2', 26))} m² por planta, planta baja con {fmt(m['plantas'][0]['cub_comun'])} m² de comunes (hall, medidores, bicicletero), "
-               f"expansiones del 16 % de la huella en plantas tipo (se valúan al 50 %), retiros de 3 m por nivel sobre {'ambas líneas oficiales' if g['esquina'] else 'la línea oficial'}" + (f" y ochava de {fmt(g['ochava_area'], 1)} m²" if g["ochava_area"] else "") +
-               f". Eficiencia vendible/cubierto: <b>{m['eficiencia'] * 100:.0f} %</b>. Vendible ponderado (expansiones al 50 %): <b>{fmt(m['vend_pond'])} m²</b>. El balance es una aproximación de gabinete; el anteproyecto de un profesional matriculado puede variar ± 5 %.", SM))
+               f"expansiones del 16 % de la huella en plantas tipo (se valúan al 50 %), retiros de 2 m y 4 m desde {'ambas líneas oficiales' if g['esquina'] else 'la línea oficial'} (art. 6.3.1)" + (f" y ochava de {fmt(g['ochava_area'], 1)} m²" if g["ochava_area"] else "") +
+               f". Retiros: {T['retiros_txt']}. Eficiencia vendible/cubierto: <b>{m['eficiencia'] * 100:.0f} %</b>. Vendible ponderado (expansiones al 50 %): <b>{fmt(m['vend_pond'])} m²</b>. El balance es una aproximación de gabinete; el anteproyecto de un profesional matriculado puede variar ± 5 %.", SM))
     # ---- 05 plusvalía
     S.append(titulo("05", "Contribución por plusvalía urbana (Ley 6.062)"))
     if m["plusv_usd"] > 0:
         rows = [["Criterio", "Superficie adicional", "UVA", "USD (UVA " + fmt(m["UVA"], 2) + " · MEP " + fmt(m["MEP"], 2) + ")"],
-                ["Sobre superficie cubierta total (conservador)", f"{fmt(m['adicional'])} m²", fmt(m["plusv_uva"]), usd(m["plusv_usd"])],
-                ["Sobre superficie vendible (criterio de muchos desarrolladores)", f"{fmt(m['adicional_vend'])} m²", fmt(m["plusv_usd_v"] * m["MEP"] / m["UVA"]), usd(m["plusv_usd_v"])]]
+                ["Ley 6.062: superficie sobre rasante sin balcones − 20 % − FOT del CPU", f"{fmt(m['adicional'])} m²", fmt(m["plusv_uva"]), usd(m["plusv_usd"])],
+                ["Sin la deducción del 20 % (techo prudente)", f"{fmt(m['adicional_vend'])} m²", fmt(m["plusv_usd_v"] * m["MEP"] / m["UVA"]), usd(m["plusv_usd_v"])]]
         S.append(tabla(rows, [72 * mm, 32 * mm, 26 * mm, 40 * mm], gold_rows=(1,)))
-        S.append(P(f"Fórmula: (m² construibles − FOT del código anterior {fmt(N['fot_cpu'], 2)} × {fmt(g['sup'])} m²) × {fmt(N['inc_uva'])} UVA/m² × {N['alicuota'] * 100:.0f} %. Se paga antes del permiso de obra y el modelo lo carga íntegro como costo del proyecto, con el criterio conservador (cubierto total). Si el desarrollador liquida sobre vendible, el lote vale {usdk(m['plusv_usd'] - m['plusv_usd_v'])} más."))
+        S.append(P(f"Fórmula: (m² construibles − FOT del código anterior {fmt(N['fot_cpu'], 2)} × {fmt(g['sup'])} m²) × {fmt(N['inc_uva'])} UVA/m² × {N['alicuota'] * 100:.0f} %. La base imponible es la superficie total sobre rasante (sin balcones ni construcciones sobre el plano límite) menos el 20 %, menos lo que admitía el Código de Planeamiento (A1 − A2), por el valor de incidencia en UVA y la alícuota del polígono. La paga quien registra los planos, antes del permiso de obra; el modelo la carga íntegra como costo. Sin la deducción del 20 % el monto subiría a {usdk(m['plusv_usd_v'])}."))
     else:
         S.append(P("No hay excedente respecto de la capacidad del código anterior" + (f" (FOT {fmt(N['fot_cpu'], 2)})" if N["fot_cpu"] else "") + ": el proyecto no paga contribución por plusvalía."))
     # ---- 06 mercado
@@ -369,6 +373,17 @@ def construir(R, T, out):
     else:
         S.append(P(T.get("englobe_nota") or ("Se evaluó el englobamiento con cada lindero apto y " + ("ninguna combinación mejora el rendimiento en más del 10 %: " + "; ".join(f"con {' + '.join(c['direccion'] for c in o['con'])} {o['ganancia_pct'] * 100:+.1f} %" for o in eng["opciones"]) + ". " if eng["opciones"] else "no hay linderos aptos. ")
                    + ("Quedan excluidos " + "; ".join(f"{e['direccion']} ({e['motivo']})" for e in eng["excluidos"]) + ". " if eng["excluidos"] else "") + "El lote se valúa y se vende por sí solo; el englobamiento no se usa como argumento de precio.")))
+    # ---- completamiento de tejido
+    en = R.get("enrase") or {}
+    if en.get("aplica"):
+        S.append(P("Completamiento de tejido (art. 6.5.5)", H2))
+        rows = [["Escenario", "Vendibles", "Cubiertos", "Residual 22 %", "Plusvalía"], ["Caso base (unidad)", f"{fmt(m['vend_cub'])} m²", f"{fmt(m['cub_total'])} m²", usdk(E["terreno_residual"]), usdk(m["plusv_usd"])],
+                [f"Con enrase · caso {en['caso']} · +{en['plantas_extra']} plantas hasta {fmt(en['altura_objetivo'], 1)} m", f"{fmt(en['vend'])} m²", f"{fmt(en['cub'])} m²", usdk(en["residual"]), usdk(en["plusv_usd"])]]
+        S.append(tabla(rows, [66 * mm, 24 * mm, 24 * mm, 28 * mm, 28 * mm], gold_rows=(2,)))
+        S.append(P(T.get("enrase_nota") or (f"El lindero {' y '.join(x['direccion'] for x in en['linderos'])} es un edificio consolidado que supera el plano límite de la unidad ({', '.join(fmt(x['h_fachada'], 1) + ' m' for x in en['linderos'])}), por lo que el Código admite completar el tejido adosándose a él: "
+                   f"+{fmt(en['ganancia_vend'])} m² vendibles. {en['nota']} No se usa como argumento de precio hasta que la consulta esté hecha; es el plus que un desarrollador experimentado va a ver.")))
+    elif en.get("linderos") or (en.get("motivo") and any(l.get("supera_unidad") for l in g["linderos"])):
+        S.append(P("Completamiento de tejido (art. 6.5.5)", H2)); S.append(P(T.get("enrase_nota") or f"Hay linderos que superan la altura de la unidad, pero {en.get('motivo')}."))
     # ---- 10 uso actual
     S.append(titulo("09" if not viable else "10", "Tasación por su uso actual" + ("" if not viable else " (valor de piso)")))
     rows = [["Concepto", "Mínimo", "Máximo", "Base"], ["Construcción existente (estimada)", f"{fmt(u['cub_exist'])} m²", "", f"{pisos_act} planta{'s' if pisos_act > 1 else ''} · {uso_txt[:50]}"],
@@ -379,7 +394,7 @@ def construir(R, T, out):
     S.append(P(T.get("uso_nota") or ("Este es el valor de piso del inmueble: lo que vale aunque ningún desarrollador lo compre. " if viable else "") + "La superficie cubierta existente se estima a partir de los pisos relevados y la huella; hay que confirmarla con la medición, el estado constructivo, el título y la situación de ocupación, que no fueron relevados.", SM))
     # ---- conclusiones
     S.append(titulo("10" if not viable else "11", "Conclusiones y recomendación comercial"))
-    concl = T.get("conclusiones") or ([f"<b>Capacidad.</b> {N['unidad']}: {fmt(m['cub_total'])} m² cubiertos y {fmt(m['vend_cub'])} m² vendibles sobre una huella de {fmt(g['huella'])} m², en PB + {N['n_tipo']}" + (f" + {m['retiros_utiles']} retiro{'s' if m['retiros_utiles'] > 1 else ''}" if m["retiros_utiles"] else "") + ".",
+    concl = T.get("conclusiones") or ([f"<b>Capacidad.</b> {N['unidad']}: {fmt(m['cub_total'])} m² cubiertos y {fmt(m['vend_cub'])} m² vendibles sobre una huella de {fmt(g['huella'])} m², en PB + {N['n_tipo']}" + (f" + {N['retiros']} retiro{'s' if N['retiros'] > 1 else ''} ({T['retiros_txt']})" if N["retiros"] else "") + ".",
                                        (f"<b>Valor.</b> Precio real de cierre {rango(m['precio_real']['piso'], m['precio_real']['techo'], -4)}; publicación sugerida {usd(m['precio_real']['techo'] * 1.05, -4)}; permuta por el {E['permuta_pct'] * 100:.0f} % de los vendibles." if viable else
                                         f"<b>Valor.</b> El desarrollo no cierra a los precios de la zona; tasación estimada por uso actual {rango(u['rango'][0], u['rango'][1], -4)} libre de ocupantes, publicación sugerida {usd(u['rango'][1] * 1.08, -4)}."),
                                        f"<b>Plusvalía.</b> {usdk(m['plusv_usd']) + ' con el criterio conservador; conviene liquidarla antes de negociar porque el comprador la descuenta del precio.' if m['plusv_usd'] > 0 else 'No aplica.'}",
@@ -391,7 +406,7 @@ def construir(R, T, out):
     S.append(titulo("11" if not viable else "12", "Fuentes, supuestos y alcance"))
     S.append(P("Datos abiertos del Gobierno de la Ciudad de Buenos Aires (data.buenosaires.gob.ar): parcelas catastrales (jul-2026), Código Urbanístico por parcela (norma al 31/12/2024, jun-2026), Relevamiento de Usos del Suelo 2022-2024, obras registradas DGROC (jul-2026), Áreas de Protección Histórica (jun-2026) y volumetría CUR3D (nov-2024). "
                f"Precios de mercado: publicaciones en portales inmobiliarios relevadas el {T['fecha_mercado']}. Costo de obra: índice MESH. UVA {fmt(m['UVA'], 2)} y dólar MEP {fmt(m['MEP'], 2)} a la fecha del relevamiento.", SM))
-    S.append(P("Supuestos del modelo: núcleo de circulación de 26 m² por planta (22 m² en lotes chicos), expansiones del 16 % de la huella valuadas al 50 %, retiros de 3 m por nivel desde la línea oficial, margen objetivo del 22 % sobre costos (15 % como techo), demolición USD 70/m², plusvalía liquidada sobre superficie cubierta total. "
+    S.append(P("Supuestos del modelo: núcleo de circulación de 26 m² por planta (22 m² en lotes chicos), expansiones del 16 % de la huella valuadas al 50 %, retiros de 2 m y 4 m desde la línea oficial, margen objetivo del 22 % sobre costos (15 % como techo), demolición USD 70/m², plusvalía liquidada sobre superficie cubierta total. "
                "La huella edificable se calcula con la Línea de Frente Interno al 25 % del ancho de manzana; en manzanas atípicas la plancheta oficial puede fijar otra franja.", SM))
     S.append(P("Régimen impositivo de la venta para personas humanas no habitualistas (verificado): el Impuesto a la Transferencia de Inmuebles fue derogado por la Ley 27.743 (2024) y el impuesto cedular del 15 % fue eliminado por el art. 192 de la Ley de Modernización Laboral (vigente desde el 1-ene-2026); subsiste el impuesto de sellos de la Ciudad (3,6 %, en general a cargo de ambas partes por mitades). Confirmar con el escribano según la situación particular.", SM))
     S.append(P("Alcance: evaluación preliminar con fines de tasación y comercialización, elaborada sobre información pública y de mercado sin visita al inmueble. No sustituye el anteproyecto de un profesional matriculado, la consulta catastral, el informe de dominio ni la liquidación oficial de plusvalía.", SM))

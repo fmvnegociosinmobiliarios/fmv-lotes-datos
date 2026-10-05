@@ -128,16 +128,22 @@ def datos_parcela(smp, comuna=None):
     return d
 
 # ----------------------------------------------------------------------------- normativa
-UNIDADES = {  # uni_edif_1 (capa CU norma 31/12/2024) -> unidad, altura cuerpo, plantas tipo sobre PB, retiros, plano límite
-    0.0: dict(unidad="Normativa especial (U / APH / UP / EE)", cuerpo=0.0, n_tipo=0, retiros=0, plano=0.0, nota="La capa oficial no asigna altura genérica: la parcela está en un distrito de normativa especial; hay que consultar la ficha urbanística."),
-    9.0: dict(unidad="USAB0 – Sustentabilidad de Altura Baja 0", cuerpo=9.0, n_tipo=2, retiros=0, plano=9.0, nota="Planta baja más dos pisos, sin retiro adicional."),
-    12.0: dict(unidad="USAB1 – Sustentabilidad de Altura Baja 1", cuerpo=9.0, n_tipo=2, retiros=1, plano=12.0, nota="Planta baja más dos pisos de cuerpo principal (9 m) y un retiro hasta 12 m."),
-    14.6: dict(unidad="USAB2 – Sustentabilidad de Altura Baja 2", cuerpo=11.2, n_tipo=3, retiros=1, plano=14.6, nota="Planta baja más tres pisos de cuerpo principal (11,2 m) y un retiro hasta 14,6 m."),
-    17.2: dict(unidad="USAM – Sustentabilidad de Altura Media", cuerpo=17.2, n_tipo=5, retiros=2, plano=23.5, nota="Planta baja más cinco pisos (17,2 m) y dos retiros hasta 23,5 m."),
-    22.8: dict(unidad="USAA – Sustentabilidad de Altura Alta", cuerpo=22.8, n_tipo=7, retiros=2, plano=29.8, nota="Planta baja más siete pisos (22,8 m) y dos retiros hasta 29,8 m."),
-    31.2: dict(unidad="CM – Corredor Medio", cuerpo=31.2, n_tipo=10, retiros=2, plano=38.2, nota="Planta baja más diez pisos (31,2 m) y dos retiros hasta 38,2 m; admite basamento comercial."),
-    38.0: dict(unidad="CA – Corredor Alto", cuerpo=38.0, n_tipo=12, retiros=2, plano=45.0, nota="Planta baja más doce pisos (38 m) y dos retiros hasta 45 m; admite basamento comercial."),
+UNIDADES = {  # uni_edif_1 (capa CU norma 31/12/2024) -> unidad, altura máxima del cuerpo, plantas tipo sobre PB, retiros habitables, plano límite, basamento (CM/CA)
+    0.0: dict(unidad="Normativa especial (U / APH / UP / EE)", cuerpo=0.0, n_tipo=0, retiros=0, plano=0.0, basamento=False, art="Anexo II", nota="La capa oficial no asigna altura genérica: la parcela está en un distrito de normativa especial (Anexo II); hay que consultar la ficha urbanística."),
+    9.0: dict(unidad="USAB0 – Sustentabilidad de Altura Baja 0", cuerpo=9.0, n_tipo=2, retiros=0, plano=9.0, basamento=False, art="6.2.5", nota="Planta baja más dos pisos (9 m), sin retiros; se construye hasta la Línea de Frente Interno."),
+    12.0: dict(unidad="USAB1 – Sustentabilidad de Altura Baja 1", cuerpo=12.0, n_tipo=3, retiros=0, plano=12.0, basamento=False, art="6.2.5", nota="Planta baja más tres pisos (12 m), sin retiros; se construye hasta la Línea de Frente Interno (modificación de dic-2024)."),
+    14.6: dict(unidad="USAB2 – Sustentabilidad de Altura Baja 2", cuerpo=14.6, n_tipo=4, retiros=0, plano=14.6, basamento=False, art="6.2.6", nota="Planta baja más cuatro pisos (14,6 m), sin retiros; se construye hasta la Línea de Frente Interno (modificación de dic-2024)."),
+    17.2: dict(unidad="USAM – Sustentabilidad de Altura Media", cuerpo=17.2, n_tipo=5, retiros=2, plano=24.2, basamento=False, art="6.2.4", nota="Planta baja más cinco pisos (17,2 m) y dos retiros habitables hasta el plano límite de 24,2 m."),
+    22.8: dict(unidad="USAA – Sustentabilidad de Altura Alta", cuerpo=22.8, n_tipo=7, retiros=2, plano=29.8, basamento=False, art="6.2.3", nota="Planta baja más siete pisos (22,8 m) y dos retiros habitables hasta el plano límite de 29,8 m."),
+    31.2: dict(unidad="CM – Corredor Medio", cuerpo=31.2, n_tipo=10, retiros=2, plano=38.2, basamento=True, art="6.2.2", nota="Planta baja más diez pisos (31,2 m), dos retiros habitables hasta 38,2 m y basamento de hasta 6 m que puede llegar a la Línea Interna de Basamento."),
+    38.0: dict(unidad="CA – Corredor Alto", cuerpo=38.0, n_tipo=12, retiros=2, plano=45.0, basamento=True, art="6.2.1", nota="Planta baja más doce pisos (38 m), dos retiros habitables hasta 45 m y basamento de hasta 6 m que puede llegar a la Línea Interna de Basamento."),
 }
+RETIRO_H = [2.0, 4.0]          # retiros horizontales desde la L.O.: 1º 2 m (altura 3 m), 2º 4 m acumulados (altura 4 m) — art. 6.3.1
+ESPACIO_FONDO = {9.0: 4.0, 12.0: 4.0, 14.6: 4.0, 17.2: 6.0, 22.8: 6.0, 31.2: 8.0, 38.0: 8.0}   # art. 6.4.2.4: parcelas no alcanzadas por la LFI
+BANDA_MINIMA = 16.0            # art. 6.4: banda edificable garantizada desde la L.O.
+CONSOLIDADO = 0.75             # art. 6.4.2.3: edificio consolidado = altura de fachada >= 75 % de la altura máxima de su unidad (o catalogado)
+H_PISO = 2.9                   # altura NPT a NPT estimada para pisos existentes
+
 MIXTURA = {0: "Sin mixtura asignada", 1: "Mixtura 1 – residencial de baja intensidad", 2: "Mixtura 2 – residencial con comercio diario", 3: "Mixtura 3 – mixto, comercio y servicios", 4: "Mixtura 4 – alta intensidad, corredores"}
 
 def normativa(d):
@@ -230,9 +236,20 @@ def geometria(d, lfi_pct=0.25, lfi_override=None):
         parts = list(ray.geoms) if hasattr(ray, "geoms") else [ray]
         parts = [p for p in parts if p.length > 1 and p.distance(mid) < 0.5]
         if parts: ancho_mz = max(p.length for p in parts)
-    lfi = lfi_override if lfi_override else lfi_pct * ancho_mz
-    band = unary_union([s for g in frentes for s in g["segs"]]).buffer(lfi)
+    lfi = lfi_override if lfi_override else max(lfi_pct * ancho_mz, BANDA_MINIMA)   # art. 6.4: 16 m garantizados
+    lib = ancho_mz / 3.0                                                               # L.I.B. a los tercios (basamento en CM/CA, subsuelos en todos)
+    street_line = unary_union([s for g in frentes for s in g["segs"]])
+    band = street_line.buffer(lfi)
     footprint = tg.intersection(band)
+    huella_lib = tg.intersection(street_line.buffer(lib)).area
+    # proximidad a esquina (art. 6.4.2.3): parcelas a menos de 1/4 + 9 m (máx. 34 m) de la prolongación de las L.O. concurrentes
+    bc = list(block.simplify(1.5).exterior.coords)[:-1]; corners = []
+    for i in range(len(bc)):   # vértices de la manzana = cambios de dirección mayores a 35°
+        a, b, c_ = bc[i - 1], bc[i], bc[(i + 1) % len(bc)]
+        a1 = math.atan2(b[1] - a[1], b[0] - a[0]); a2 = math.atan2(c_[1] - b[1], c_[0] - b[0]); dang = abs((math.degrees(a2 - a1) + 180) % 360 - 180)
+        if 35 < dang < 150: corners.append(Point(b))
+    dist_esq = min(tg.distance(c) for c in corners) if corners else 999.0
+    proxima_esquina = (not esquina) and dist_esq < min(lfi_pct * ancho_mz + 9.0, 34.0)
     # banda del fondo: franja edificable de las calles opuestas (parcelas de la manzana que NO tienen las calles del lote)
     opp = []
     for s, x in mz.items():
@@ -253,14 +270,20 @@ def geometria(d, lfi_pct=0.25, lfi_override=None):
             tipo = sorted({(r["tipo1"] or "") + ("/" + r["tipo2"] if r.get("tipo2") else "") for r in x["rus"]})
             dirs = sorted({f'{titulo_calle(fr["calle"])} {fr["num_dom"].replace(".", "/")}' for fr in x["frentes"]})
             fondo_l = street_edge.distance(g) > 3  # no toca la calle del lote => lindero de fondo
-            linderos.append(dict(smp=s, direccion="; ".join(dirs), area=round(g.area, 1), pisos=pisos, uso=", ".join(tipo), uni_edif=f(x.get("uni_edif_1"), 0.0),
+            u_l = f(x.get("uni_edif_1"), 0.0) or 0.0; h_fachada = (3.0 + H_PISO * (pisos - 1)) if pisos else 0.0
+            catal = int(f(x.get("catalogado"), 0)) == 1
+            consolidado = bool(catal or (u_l and h_fachada >= CONSOLIDADO * u_l))
+            linderos.append(dict(smp=s, direccion="; ".join(dirs), area=round(g.area, 1), pisos=pisos, h_fachada=round(h_fachada, 1), uso=", ".join(tipo), uni_edif=u_l,
+                                 catalogado=catal, consolidado=consolidado, supera_unidad=bool(h_fachada > u_l + 1.0) if u_l else False,
                                  borde_compartido=round(sh, 1), de_fondo=bool(fondo_l) and not any(fr["calle"] in calles for fr in x["frentes"]),
-                                 edificio=bool(pisos >= 4 or (pisos >= 3 and any("MULTIFAMILIAR" in t for t in tipo))), obras_recientes=x.get("obras_recientes", 0)))
+                                 edificio=bool(consolidado or pisos >= 4 or (pisos >= 3 and any("MULTIFAMILIAR" in t for t in tipo))), obras_recientes=x.get("obras_recientes", 0)))
     # vecinos de fondo (para riesgo de tapado): parcelas de calle opuesta que tocan la parcela
     fondo_vecinos = [l for l in linderos if l["de_fondo"]]
     return dict(sup=round(tg.area, 1), frente=round(frente_len, 2), frentes=[dict(calle=titulo_calle(g["calle"]), largo=round(g["L"], 2)) for g in frentes], esquina=esquina,
                 ochava_len=round(ochava_len, 2), ochava_area=round((ochava_len / math.sqrt(2)) ** 2 / 2, 1) if ochava_len else 0.0,
-                fondo=round(fondo, 2), ancho_mz=round(ancho_mz, 1), lfi=round(lfi, 2), huella=round(footprint.area, 1), fuera_lfi=round(tg.area - footprint.area, 1),
+                fondo=round(fondo, 2), ancho_mz=round(ancho_mz, 1), lfi=round(lfi, 2), lib=round(lib, 2), huella=round(footprint.area, 1), huella_lib=round(huella_lib, 1), fuera_lfi=round(tg.area - footprint.area, 1),
+                alcanzada_lfi=bool(tg.area - footprint.area > 2.0), proxima_esquina=proxima_esquina, dist_esquina=round(dist_esq, 1),
+                linderos_consolidados_abiertos=False,
                 dist_fondo_banda_opuesta=None if dist_fondo is None else round(dist_fondo, 1), fondo_libre_teorico=round(fondo_libre, 1),
                 linderos=sorted(linderos, key=lambda l: -l["borde_compartido"]), fondo_vecinos=fondo_vecinos,
                 _tg=tg, _G=G, _footprint=footprint, _band=band, _opp=opp_band, _street=street_edge, _block=block)
@@ -272,33 +295,44 @@ def mercado_barrio(barrio):
         if norm(k) == b: m = dict(MERCADO["default"]); m.update(v); return m
     m = dict(MERCADO["default"]); m["_fallback"] = True; return m
 
-def proyecto(F, frente_total, n_tipo, retiros, comun, pb_comun, ochava=0.0, min_planta=25.0):
-    """Balance de superficies de un edificio entre medianeras (o esquina) con huella F."""
-    F = max(F - ochava, 0.0)
-    plantas = [dict(nivel="PB (hall, medidores, local/unidad)", n=1, cub_comun=min(pb_comun, F), cub_vend=max(F - pb_comun, 0), exp=0.0)]
-    if n_tipo: plantas.append(dict(nivel=f"1 a {n_tipo}", n=n_tipo, cub_comun=comun, cub_vend=max(F - comun, 0), exp=0.16 * F))
+def proyecto(F, frente_total, n_tipo, retiros, comun, pb_comun, ochava=0.0, min_planta=25.0, basamento_extra=0.0, fondo_retiro=0.0, contrafrente_retiro2=0.0):
+    """Balance de superficies de un edificio entre medianeras (o esquina) con huella F (art. 6.3.1: retiros de 2 m y 4 m desde la L.O.).
+    basamento_extra: m² adicionales de PB y 1º piso hasta la L.I.B. en corredores (art. 6.4.3); fondo_retiro: m² a dejar libres en el
+    contrafrente de plantas tipo cuando la parcela no está alcanzada por la LFI (art. 6.4.2.4); contrafrente_retiro2: m² del 2º retiro en contrafrente (CM/CA)."""
+    F = max(F - ochava, 0.0); Ft = max(F - fondo_retiro, 0.0)
+    plantas = [dict(nivel="PB (hall, medidores, local/unidad)" + (" + basamento" if basamento_extra else ""), n=1, cub_comun=min(pb_comun, F), cub_vend=max(F + basamento_extra - pb_comun, 0), exp=0.0)]
+    if basamento_extra and n_tipo:
+        plantas.append(dict(nivel="1 (basamento hasta L.I.B.)", n=1, cub_comun=comun, cub_vend=max(Ft + basamento_extra - comun, 0), exp=0.10 * Ft)); n_rest = n_tipo - 1
+    else: n_rest = n_tipo
+    if n_rest: plantas.append(dict(nivel=f"{n_tipo - n_rest + 1} a {n_tipo}", n=n_rest, cub_comun=comun, cub_vend=max(Ft - comun, 0), exp=0.16 * Ft))
     usados = 0
     for k in range(retiros):
-        rk = F - 3.0 * (k + 1) * frente_total
+        rk = Ft - RETIRO_H[k] * frente_total - (contrafrente_retiro2 if k == 1 else 0.0)
         if rk - comun >= min_planta:
-            plantas.append(dict(nivel=f"{n_tipo + k + 1} (retiro {k + 1})", n=1, cub_comun=comun, cub_vend=rk - comun, exp=3.0 * frente_total * 0.7 + 0.10 * F)); usados += 1
+            plantas.append(dict(nivel=f"{n_tipo + k + 1} (retiro {k + 1})", n=1, cub_comun=comun, cub_vend=rk - comun, exp=RETIRO_H[k] * frente_total * 0.7 + 0.10 * Ft)); usados += 1
         else:
             plantas.append(dict(nivel=f"{n_tipo + k + 1} (retiro {k + 1}) – terraza / SUM", n=1, cub_comun=max(min(rk, comun), 0), cub_vend=0.0, exp=0.0)); break
     for p in plantas:
         p["cub_total"] = (p["cub_comun"] + p["cub_vend"]) * p["n"]; p["vend_total"] = p["cub_vend"] * p["n"]; p["comun_total"] = p["cub_comun"] * p["n"]; p["exp_total"] = p["exp"] * p["n"]
     cub = sum(p["cub_total"] for p in plantas); vend = sum(p["vend_total"] for p in plantas); exp = sum(p["exp_total"] for p in plantas)
-    return dict(huella=F, plantas=plantas, cub_total=cub, vend_cub=vend, comun=sum(p["comun_total"] for p in plantas), exp_total=exp, vend_pond=vend + 0.5 * exp,
+    return dict(huella=F, huella_tipo=Ft, basamento_extra=basamento_extra, fondo_retiro=fondo_retiro, plantas=plantas, cub_total=cub, vend_cub=vend, comun=sum(p["comun_total"] for p in plantas), exp_total=exp, vend_pond=vend + 0.5 * exp,
                 retiros_utiles=usados, n_plantas=1 + n_tipo + usados, pb_vend=plantas[0]["cub_vend"], eficiencia=vend / cub if cub else 0)
 
-def modelo(sup, F, frente_total, N, M, ochava=0.0, pb_comun=None, comun=None, cub_exist=None, extras=None, comps=None, margen=0.22):
+def modelo(sup, F, frente_total, N, M, ochava=0.0, pb_comun=None, comun=None, cub_exist=None, extras=None, comps=None, margen=0.22, geo=None):
     """N = normativa(), M = mercado del barrio. Devuelve el modelo completo (3 niveles, plusvalía, sensibilidad, valor real)."""
     UVA, MEP = MERCADO["global"]["UVA"], MERCADO["global"]["MEP"]; ind = MERCADO["global"]["indirectos"]
     comun = comun or M.get("nucleo_m2", 26.0); pb_comun = pb_comun if pb_comun is not None else (45.0 if F < 250 else 60.0 if F < 500 else 90.0)
-    pr = proyecto(F, frente_total, N["n_tipo"], N["retiros"], comun, pb_comun, ochava)
+    bas = max((geo or {}).get("huella_lib", F) - F, 0.0) if N.get("basamento") else 0.0
+    fondo_ret = 0.0; cf2 = 0.0
+    if geo and not geo.get("alcanzada_lfi", True) and not geo.get("esquina") and N["n_tipo"] >= 3:   # parcela entre medianeras no alcanzada por la LFI: espacio urbano de fondo (art. 6.4.2.4)
+        fondo_ret = ESPACIO_FONDO.get(N.get("altura_capa", 0.0), 0.0) * frente_total
+    if N.get("basamento"): cf2 = 4.0 * frente_total * 0.5      # 2º retiro también en contrafrente en corredores (4 m), ponderado
+    pr = proyecto(F, frente_total, N["n_tipo"], N["retiros"], comun, pb_comun, ochava, basamento_extra=bas, fondo_retiro=fondo_ret, contrafrente_retiro2=cf2)
     cub, vend, exp, vp = pr["cub_total"], pr["vend_cub"], pr["exp_total"], pr["vend_pond"]
     cap_cpu = (N["fot_cpu"] or 0) * sup
-    adicional = max(cub - cap_cpu, 0); plusv_uva = adicional * N["inc_uva"] * N["alicuota"]; plusv_usd = plusv_uva * UVA / MEP
-    adicional_v = max(vend - cap_cpu, 0); plusv_usd_v = adicional_v * N["inc_uva"] * N["alicuota"] * UVA / MEP
+    # Ley 6.062: base = (superficie sobre rasante sin balcones − 20 %) − FOT del CPU × superficie de parcela; se muestra también el cálculo sin la deducción
+    adicional = max(0.8 * cub - cap_cpu, 0); plusv_uva = adicional * N["inc_uva"] * N["alicuota"]; plusv_usd = plusv_uva * UVA / MEP
+    adicional_v = max(cub - cap_cpu, 0); plusv_usd_v = adicional_v * N["inc_uva"] * N["alicuota"] * UVA / MEP
     demol = MERCADO["global"]["demolicion_usd_m2"] * (cub_exist if cub_exist else max(sup * 1.2, 150))
     extras = dict(extras or {})
     if N.get("riesgo_hidrico"): extras.setdefault("retardo_pluvial", MERCADO["global"]["retardo_pluvial_usd"])
@@ -351,7 +385,7 @@ def modelo(sup, F, frente_total, N, M, ochava=0.0, pb_comun=None, comun=None, cu
 def englobamiento(d, geo, N, M, umbral=0.10, comps=None):
     """Evalúa englobar con cada lindero apto (no edificio) y con todos juntos. Devuelve lista ordenada por ganancia %."""
     base = modelo(geo["sup"], geo["huella"], sum(fr["largo"] for fr in geo["frentes"]), N, M, geo["ochava_area"], comps=comps)
-    aptos = [l for l in geo["linderos"] if not l["edificio"] and l["pisos"] <= 3]
+    aptos = [l for l in geo["linderos"] if not l["edificio"] and not l.get("consolidado") and l["pisos"] <= 3]
     res = []
     combos = [[l] for l in aptos] + ([[a, b] for i, a in enumerate(aptos) for b in aptos[i + 1:]] if len(aptos) > 1 else [])   # de a uno y de a pares: más de dos dueños no es realista
     for combo in combos:
@@ -369,8 +403,24 @@ def englobamiento(d, geo, N, M, umbral=0.10, comps=None):
                         vend=mu["vend_cub"], cub=mu["cub_total"], vend_separadas=sep_vend, ganancia_pct=gan, residual=mu["esc"]["Estándar"]["terreno_residual"], vend_por_m2_lote=mu["vend_cub"] / u.area,
                         recomendado=bool(gan >= umbral and mu["esc"]["Estándar"]["terreno_residual"] > 0), nucleos=nuc))
     res.sort(key=lambda r: -r["ganancia_pct"])
-    excluidos = [dict(smp=l["smp"], direccion=l["direccion"], motivo="edificio en propiedad horizontal o varios dueños" if l["edificio"] else "más de 3 plantas") for l in geo["linderos"] if l not in aptos]
+    excluidos = [dict(smp=l["smp"], direccion=l["direccion"], motivo="edificio consolidado (art. 6.4.2.3: fachada ≥ 75 % de la altura máxima de su unidad)" if l.get("consolidado") else ("edificio en propiedad horizontal o varios dueños" if l["edificio"] else "más de 3 plantas")) for l in geo["linderos"] if l not in aptos]
     return dict(base_vend=base["vend_cub"], opciones=res, excluidos=excluidos, umbral=umbral)
+
+# ----------------------------------------------------------------------------- completamiento de tejido (enrase, art. 6.5.5)
+def enrase(geo, N, M, base, comps=None):
+    """Escenario con completamiento de tejido: si un lindero consolidado supera la altura máxima de la unidad, la obra nueva puede adosarse
+    equiparando niveles (art. 6.5.5). No se admite en USAB para los casos A; en USAB sólo casos B limitados (ancho 5 m, doble altura). Sujeto a consulta."""
+    if not N["n_tipo"] or N["cuerpo"] <= 0: return dict(aplica=False, motivo="sin unidad genérica")
+    altos = [l for l in geo["linderos"] if l.get("consolidado") and l["h_fachada"] > N["plano"] + 1.0 and not l["de_fondo"]]
+    if not altos: return dict(aplica=False, motivo="ningún lindero consolidado supera el plano límite de la unidad")
+    if N["altura_capa"] <= 14.6: return dict(aplica=False, motivo="en USAB el completamiento de tejido sólo se admite en casos B muy limitados (ancho máximo 5 m); se deja como consulta", linderos=[l["direccion"] for l in altos])
+    l = max(altos, key=lambda x: x["h_fachada"]); h_obj = min(l["h_fachada"], N["plano"] + 4 * H_PISO + 0.1) if len(altos) == 1 else max(x["h_fachada"] for x in altos)
+    extra = max(int((h_obj - N["plano"]) // H_PISO), 0)
+    if extra <= 0: return dict(aplica=False, motivo="la diferencia de altura no alcanza para una planta completa")
+    mu = modelo(geo["sup"], geo["huella"], sum(fr["largo"] for fr in geo["frentes"]) or geo["frente"], dict(N, n_tipo=N["n_tipo"] + extra, retiros=N["retiros"]), M, geo["ochava_area"], comps=comps, geo=geo)
+    return dict(aplica=True, caso="A (dos linderos más altos)" if len(altos) > 1 else "B (un lindero más alto)", linderos=[dict(direccion=x["direccion"], h_fachada=x["h_fachada"], pisos=x["pisos"]) for x in altos],
+                plantas_extra=extra, altura_objetivo=round(h_obj, 1), vend=mu["vend_cub"], cub=mu["cub_total"], ganancia_vend=mu["vend_cub"] - base["vend_cub"], residual=mu["esc"]["Estándar"]["terreno_residual"],
+                plusv_usd=mu["plusv_usd"], nota="Sujeto a consulta ante la DGIUR: el volumen debe adosarse en toda su extensión equiparando techos y retiros del lindero, con tratamiento de fachada en la cara lateral; los metros por encima de la capacidad del CPU pagan plusvalía.")
 
 # ----------------------------------------------------------------------------- tasación por uso actual
 def uso_actual(d, geo, M, cub_exist=None, factor_estado=None):
@@ -429,7 +479,8 @@ def analizar(direccion=None, smp=None, comuna=None, comps=None, overrides=None, 
         if k in ov: geo[k] = ov[k]
     M = mercado_barrio(d["barrio"]); M.update(ov.get("mercado", {}))
     frente_total = sum(fr["largo"] for fr in geo["frentes"]) if geo["frentes"] else geo["frente"]
-    mod = modelo(geo["sup"], geo["huella"], frente_total, N, M, geo["ochava_area"], pb_comun=ov.get("pb_comun"), cub_exist=ov.get("cub_exist"), extras=ov.get("extras"), comps=comps)
+    mod = modelo(geo["sup"], geo["huella"], frente_total, N, M, geo["ochava_area"], pb_comun=ov.get("pb_comun"), cub_exist=ov.get("cub_exist"), extras=ov.get("extras"), comps=comps, geo=geo)
+    enr = enrase(geo, N, M, mod, comps)
     eng = englobamiento(d, geo, N, M, umbral_englobe, comps) if N["n_tipo"] else dict(base_vend=0, opciones=[], excluidos=[], umbral=umbral_englobe)
     uso = uso_actual(d, geo, M, ov.get("cub_exist"), ov.get("factor_estado"))
     prefix = os.path.join(workdir, "mapa_" + smp.replace("-", "_")); mp = mapas(d, geo, prefix)
@@ -439,7 +490,7 @@ def analizar(direccion=None, smp=None, comuna=None, comps=None, overrides=None, 
              manzana_resumen=dict(parcelas=len(d["manzana"]), obras_recientes=sum(x.get("obras_recientes", 0) for x in d["manzana"].values()),
                                   pisos_max=max([int(f(r["pisos"], 0)) for x in d["manzana"].values() for r in x["rus"]] or [0]),
                                   pisos_prom=float(np.mean([max([int(f(r["pisos"], 0)) for r in x["rus"]] or [0]) for x in d["manzana"].values()]))),
-             modelo=mod, englobamiento=eng, uso_actual=uso, mapas=mp, mercado=M, global_=MERCADO["global"])
+             modelo=mod, englobamiento=eng, enrase=enr, uso_actual=uso, mapas=mp, mercado=M, global_=MERCADO["global"])
     R["viable"] = bool(mod["precio_real"]["viable"]) and N["n_tipo"] > 0
     return R
 
